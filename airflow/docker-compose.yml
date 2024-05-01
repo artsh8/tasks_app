@@ -1,0 +1,40 @@
+version: "2"
+
+services:
+  cairflow:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+    - 8082:8080
+    networks:
+      def-network:
+        ipv4_address: 10.5.0.3
+
+  cpostgres:
+    image: postgres
+    ports:
+    - 5433:5432
+    environment:
+      POSTGRES_PASSWORD: postgres
+    networks:
+      def-network:
+        ipv4_address: 10.5.0.2
+
+  cminio:
+    image: bitnami/minio:latest
+    ports:
+    - 9003:9000
+    - 9004:9001
+    networks:
+      def-network:
+        ipv4_address: 10.5.0.4
+
+networks:
+  def-network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.5.0.0/16
+          gateway: 10.5.0.1
